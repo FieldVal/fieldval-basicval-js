@@ -55,6 +55,12 @@ var BasicVal = {
                 error: 107,
                 error_message: "Invalid email address format."
             }
+        },
+        invalid_url: function(prefix) {
+            return {
+                error: 108,
+                error_message: "Invalid url format."
+            }
         }
     },
     integer: function(required,flags){
@@ -250,10 +256,24 @@ var BasicVal = {
             return flags
         }
         return operator;
+    },
+    url: function(flags){
+        var operator = function(value) {
+            var re = BasicVal.url_regex;
+            if(!re.test(value)){
+                return BasicVal.errors.invalid_url();
+            } 
+        }
+        if(flags!==undefined){
+            flags.operator = operator;
+            return flags
+        }
+        return operator;
     }
 }
 
 BasicVal.email_regex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+BasicVal.url_regex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
 
 if (typeof module != 'undefined') {
     module.exports = BasicVal;
