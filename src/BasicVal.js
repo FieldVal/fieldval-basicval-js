@@ -83,7 +83,8 @@ var BasicVal = {
     },
     string: function(required,flags){
         var operator = function(value, emit) {
-            var error = _validator_ref.type("string",required,flags)(value);
+            //Passing emit means that the value can be changed
+            var error = _validator_ref.type("string",required,flags)(value,emit);
             if(error) return error;
 
             if(!flags || flags.trim!==false){//If not explicitly false
@@ -96,7 +97,6 @@ var BasicVal = {
                     return _validator_ref.NOT_REQUIRED_BUT_MISSING;
                 }
             }
-            emit(value);
         }
         if(flags!==undefined){
             flags.operator = operator;
