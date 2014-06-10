@@ -26,6 +26,13 @@ describe('Validator', function() {
             assert.equal(26, my_validator.get("my_integer", bval.integer(true)));
         })
 
+        it('should return an email when an string of valid syntax is present', function() {
+            var my_validator = new Validator({
+                "my_email": "example-user@test.com"
+            })
+            assert.equal("example-user@test.com", my_validator.get("my_email", bval.string(true), bval.email()));
+        })
+
         it('should return a float when an float is requested and the value is a float string', function() {
             var my_validator = new Validator({
                 "my_float": "43.5"
