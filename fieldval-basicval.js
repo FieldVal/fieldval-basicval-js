@@ -117,7 +117,7 @@ var BasicVal = {
                 }
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -126,10 +126,10 @@ var BasicVal = {
     length: function(len, flags) {
         var check = function(value) {
             if (value.length!==len) {
-                return BasicVal.errors.incorrect_length(len)
+                return FieldVal.create_error(BasicVal.errors.incorrect_length, flags, len)
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -138,10 +138,10 @@ var BasicVal = {
     min_length: function(min_len, flags) {
         var check = function(value) {
             if (value.length < min_len) {
-                return BasicVal.errors.too_short(min_len)
+                return FieldVal.create_error(BasicVal.errors.too_short, flags, min_len)
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -150,10 +150,10 @@ var BasicVal = {
     max_length: function(max_len, flags) {
         var check = function(value) {
             if (value.length > max_len) {
-                return BasicVal.errors.too_long(max_len);
+                return FieldVal.create_error(BasicVal.errors.too_long, flags, max_len);
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -162,10 +162,10 @@ var BasicVal = {
     minimum: function(min_val, flags) {
         var check = function(value) {
             if (value < min_val) {
-                return BasicVal.errors.too_small(min_val);
+                return FieldVal.create_error(BasicVal.errors.too_small, flags, min_val);
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -174,10 +174,10 @@ var BasicVal = {
     maximum: function(max_val, flags) {
         var check = function(value) {
             if (value > max_val) {
-                return BasicVal.errors.too_large(max_val);
+                return FieldVal.create_error(BasicVal.errors.too_large, flags, max_val);
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -187,12 +187,12 @@ var BasicVal = {
         //Effectively combines minimum and maximum
         var check = function(value){
             if (value < min_val) {
-                return BasicVal.errors.too_small(min_val);
+                return FieldVal.create_error(BasicVal.errors.too_small, flags, min_val);
             } else if (value > max_val) {
-                return BasicVal.errors.too_large(max_val);
+                return FieldVal.create_error(BasicVal.errors.too_large, flags, max_val);
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -216,10 +216,10 @@ var BasicVal = {
         }
         var check = function(value) {
             if (valid_values.indexOf(value) === -1) {
-                return BasicVal.errors.not_in_list();
+                return FieldVal.create_error(BasicVal.errors.not_in_list, flags);
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -229,15 +229,17 @@ var BasicVal = {
         var check = function(value) {
             if (trim) {
                 if (value.trim().length === 0) {
-                    return BasicVal.errors.cannot_be_empty();
+                    if(typeof flags.error){
+                    }
+                    return FieldVal.create_error(BasicVal.errors.cannot_be_empty, flags);
                 }
             } else {
                 if (value.length === 0) {
-                    return BasicVal.errors.cannot_be_empty();
+                    return FieldVal.create_error(BasicVal.errors.cannot_be_empty, flags);
                 }
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -247,13 +249,13 @@ var BasicVal = {
         var check = function(value) {
             if (value.length >= prefix.length) {
                 if (value.substring(0, prefix.length) != prefix) {
-                    return BasicVal.errors.no_prefix(prefix);
+                    return FieldVal.create_error(BasicVal.errors.no_prefix, flags, prefix);
                 }
             } else {
-                return BasicVal.errors.no_prefix(prefix);
+                return FieldVal.create_error(BasicVal.errors.no_prefix, flags, prefix);
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -263,13 +265,13 @@ var BasicVal = {
         var check = function(value) {
             if (value.length >= suffix.length) {
                 if (value.substring(value.length-suffix.length, value.length) != suffix) {
-                    return BasicVal.errors.no_suffix(suffix);
+                    return FieldVal.create_error(BasicVal.errors.no_suffix, flags, suffix);
                 }
             } else {
-                return BasicVal.errors.no_suffix(suffix);
+                return FieldVal.create_error(BasicVal.errors.no_suffix, flags, suffix);
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -291,7 +293,7 @@ var BasicVal = {
                 return error;
             }
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -301,10 +303,10 @@ var BasicVal = {
         var check = function(value) {
             var re = BasicVal.email_regex;
             if(!re.test(value)){
-                return BasicVal.errors.invalid_email();
+                return FieldVal.create_error(BasicVal.errors.invalid_email, flags);
             } 
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
@@ -314,10 +316,10 @@ var BasicVal = {
         var check = function(value) {
             var re = BasicVal.url_regex;
             if(!re.test(value)){
-                return BasicVal.errors.invalid_url();
+                return FieldVal.create_error(BasicVal.errors.invalid_url, flags);
             } 
         }
-        if(flags!==undefined){
+        if(flags){
             flags.check = check;
             return flags
         }
