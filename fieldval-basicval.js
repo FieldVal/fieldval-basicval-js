@@ -3,7 +3,7 @@ var _validator_ref;
 if((typeof require) === 'function'){
     _validator_ref = require("fieldval");
 } else {
-    _validator_ref = Validator;
+    _validator_ref = FieldVal;
 }
 
 var BasicVal = {
@@ -50,16 +50,28 @@ var BasicVal = {
                 error_message: "Value does not have prefix: " + prefix
             }
         },
-        invalid_email: function(prefix) {
+        invalid_email: function() {
             return {
                 error: 107,
                 error_message: "Invalid email address format."
             }
         },
-        invalid_url: function(prefix) {
+        invalid_url: function() {
             return {
                 error: 108,
                 error_message: "Invalid url format."
+            }
+        },
+        incorrect_length: function(len){
+            return {
+                error: 109,
+                error_message: "Length is not equal to " + len
+            }
+        },
+        no_suffix: function(suffix) {
+            return {
+                error: 106,
+                error_message: "Value does not have suffix: " + suffix
             }
         }
     },
@@ -82,9 +94,16 @@ var BasicVal = {
         return _validator_ref.type("boolean",required,flags);
     },
     string: function(required,flags){
-        var operator = function(value, emit) {
+        var check = function(value, emit) {
+
+            var core_check = _validator_ref.type("string",required,flags);
+            if(typeof core_check === 'object'){
+                //Passing flags turns the check into an object
+                core_check = core_check.check;
+            }
+
             //Passing emit means that the value can be changed
-            var error = _validator_ref.type("string",required,flags)(value,emit);
+            var error = core_check(value,emit);
             if(error) return error;
 
             if(!flags || flags.trim!==false){//If not explicitly false
@@ -99,62 +118,74 @@ var BasicVal = {
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
+    },
+    length: function(len, flags) {
+        var check = function(value) {
+            if (value.length!==len) {
+                return BasicVal.errors.incorrect_length(len)
+            }
+        }
+        if(flags!==undefined){
+            flags.check = check;
+            return flags
+        }
+        return check;
     },
     min_length: function(min_len, flags) {
-        var operator = function(value) {
+        var check = function(value) {
             if (value.length < min_len) {
                 return BasicVal.errors.too_short(min_len)
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     max_length: function(max_len, flags) {
-        var operator = function(value) {
+        var check = function(value) {
             if (value.length > max_len) {
                 return BasicVal.errors.too_long(max_len);
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     minimum: function(min_val, flags) {
-        var operator = function(value) {
+        var check = function(value) {
             if (value < min_val) {
                 return BasicVal.errors.too_small(min_val);
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     maximum: function(max_val, flags) {
-        var operator = function(value) {
+        var check = function(value) {
             if (value > max_val) {
                 return BasicVal.errors.too_large(max_val);
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     range: function(min_val, max_val, flags) {
         //Effectively combines minimum and maximum
-        var operator = function(value){
+        var check = function(value){
             if (value < min_val) {
                 return BasicVal.errors.too_small(min_val);
             } else if (value > max_val) {
@@ -162,34 +193,40 @@ var BasicVal = {
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     one_of: function(array, flags) {
         var valid_values = [];
-        for(var i = 0; i < array.length; i++){
-            var option = array[i];
-            if((typeof option) === 'object'){
-                valid_values.push(option[0]);
-            } else {
-                valid_values.push(option);
+        if(Object.prototype.toString.call(array) === '[object Array]'){
+            for(var i = 0; i < array.length; i++){
+                var option = array[i];
+                if((typeof option) === 'object'){
+                    valid_values.push(option[0]);
+                } else {
+                    valid_values.push(option);
+                }
+            }
+        } else {
+            for(var i in array){
+                valid_values.push(i);
             }
         }
-        var operator = function(value) {
+        var check = function(value) {
             if (valid_values.indexOf(value) === -1) {
                 return BasicVal.errors.not_in_list();
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     not_empty: function(trim, flags) {
-        var operator = function(value) {
+        var check = function(value) {
             if (trim) {
                 if (value.trim().length === 0) {
                     return BasicVal.errors.cannot_be_empty();
@@ -201,13 +238,13 @@ var BasicVal = {
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     prefix: function(prefix, flags) {
-        var operator = function(value) {
+        var check = function(value) {
             if (value.length >= prefix.length) {
                 if (value.substring(0, prefix.length) != prefix) {
                     return BasicVal.errors.no_prefix(prefix);
@@ -217,13 +254,29 @@ var BasicVal = {
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
+    },
+    suffix: function(suffix, flags) {
+        var check = function(value) {
+            if (value.length >= suffix.length) {
+                if (value.substring(value.length-suffix.length, value.length) != suffix) {
+                    return BasicVal.errors.no_suffix(suffix);
+                }
+            } else {
+                return BasicVal.errors.no_suffix(suffix);
+            }
+        }
+        if(flags!==undefined){
+            flags.check = check;
+            return flags
+        }
+        return check;
     },
     each: function(on_each, flags) {
-        var operator = function(array, stop) {
+        var check = function(array, stop) {
             var validator = new _validator_ref(null);
             for (var i = 0; i < array.length; i++) {
                 var value = array[i];
@@ -239,36 +292,36 @@ var BasicVal = {
             }
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     email: function(flags){
-        var operator = function(value) {
+        var check = function(value) {
             var re = BasicVal.email_regex;
             if(!re.test(value)){
                 return BasicVal.errors.invalid_email();
             } 
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     },
     url: function(flags){
-        var operator = function(value) {
+        var check = function(value) {
             var re = BasicVal.url_regex;
             if(!re.test(value)){
                 return BasicVal.errors.invalid_url();
             } 
         }
         if(flags!==undefined){
-            flags.operator = operator;
+            flags.check = check;
             return flags
         }
-        return operator;
+        return check;
     }
 }
 
