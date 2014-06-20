@@ -61,7 +61,7 @@ describe('FieldVal', function() {
             assert.deepEqual({"invalid":{"my_float":{"error_message":"Incorrect field type. Expected float.","error":2,"expected":"float","received":"string"}},"error_message":"One or more errors.","error":0}, my_validator.end());
         })
 
-        it('should create a custom error when one is provided', function() {
+        it('should create a custom error when one is provided (float)', function() {
             var my_validator = new FieldVal({
                 "my_float": "42"
             })
@@ -75,6 +75,22 @@ describe('FieldVal', function() {
                 })
             ));
             assert.deepEqual({"invalid":{"my_float":{"error":1000,"error_message":"Please enter a number"}},"error_message":"One or more errors.","error":0}, my_validator.end());
+        })
+
+        it('should create a custom error when one is provided (string)', function() {
+            var my_validator = new FieldVal({
+                "my_string": 42
+            })
+            assert.equal(null, my_validator.get(
+                "my_string", 
+                bval.string(true, {
+                    error:{
+                        error: 1001,
+                        error_message: "Please enter text"
+                    }
+                })
+            ));
+            assert.deepEqual({"invalid":{"my_string":{"error":1001,"error_message":"Please enter text"}},"error_message":"One or more errors.","error":0}, my_validator.end());
         })
 
         it('should return null when the value is the wrong type', function() {

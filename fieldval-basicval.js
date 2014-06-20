@@ -1,3 +1,8 @@
+var logger;
+if((typeof require) === 'function'){
+    logger = require('tracer').console();
+}
+
 var _validator_ref;
 
 if((typeof require) === 'function'){
@@ -75,28 +80,40 @@ var BasicVal = {
             }
         }
     },
-    integer: function(required,flags){
-        return _validator_ref.type("integer",required,flags);
+    merge_required_and_flags: function(required, flags){
+        if((typeof required)==="object"){
+            flags = required;
+        } else {
+            if(!flags){
+                flags = {};
+            }
+            flags.required = required;
+        }
+        return flags;
     },
-    number: function(required,flags){
-        return _validator_ref.type("number",required,flags);
+    integer: function(required, flags){
+        return _validator_ref.type("integer",BasicVal.merge_required_and_flags(required, flags));
     },
-    array: function(required,flags){
-        return _validator_ref.type("array",required,flags);
+    number: function(required, flags){
+        return _validator_ref.type("number",BasicVal.merge_required_and_flags(required, flags));
     },
-    object: function(required,flags){
-        return _validator_ref.type("object",required,flags);
+    array: function(required, flags){
+        return _validator_ref.type("array",BasicVal.merge_required_and_flags(required, flags));
     },
-    float: function(required,flags){
-        return _validator_ref.type("float",required,flags);
+    object: function(required, flags){
+        return _validator_ref.type("object",BasicVal.merge_required_and_flags(required, flags));
     },
-    boolean: function(required,flags){
-        return _validator_ref.type("boolean",required,flags);
+    float: function(required, flags){
+        return _validator_ref.type("float",BasicVal.merge_required_and_flags(required, flags));
     },
-    string: function(required,flags){
+    boolean: function(required, flags){
+        return _validator_ref.type("boolean",BasicVal.merge_required_and_flags(required, flags));
+    },
+    string: function(required, flags){
+        flags = BasicVal.merge_required_and_flags(required, flags);
         var check = function(value, emit) {
 
-            var core_check = _validator_ref.type("string",required,flags);
+            var core_check = _validator_ref.type("string",flags);
             if(typeof core_check === 'object'){
                 //Passing flags turns the check into an object
                 core_check = core_check.check;
