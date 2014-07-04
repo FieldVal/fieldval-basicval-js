@@ -75,8 +75,20 @@ var BasicVal = {
         },
         no_suffix: function(suffix) {
             return {
-                error: 106,
+                error: 110,
                 error_message: "Value does not have suffix: " + suffix
+            }
+        },
+        invalid_date_format: function() {
+            return {
+                error: 111,
+                error_message: "Invalid date format."
+            }
+        },
+        invalid_date: function() {
+            return {
+                error: 112,
+                error_message: "Invalid date."
             }
         }
     },
@@ -322,6 +334,175 @@ var BasicVal = {
             if(!re.test(value)){
                 return FieldVal.create_error(BasicVal.errors.invalid_email, flags);
             } 
+        }
+        if(flags){
+            flags.check = check;
+            return flags
+        }
+        return check;
+    },
+    date: function(format, flags){
+
+        var valid_components = {
+            "YYYY": [4],
+            "YY": [2],
+            "MM": [2],
+            "M": [1,2],
+            "DD": [2],
+            "D": [1,2],
+            " ": 0,
+            "-": 0,
+            "/": 0,
+            ":": 0
+        }
+
+        var format_array = [];
+
+        var f = 0;
+        var error = false;
+        while(f < format.length && !error){
+            var handled = false;
+            for(var c in valid_components){
+                var substring = format.substring(f,f+c.length);
+                if(substring===c){
+                    format_array.push(c);
+                    f += c.length;
+                    handled = true;
+                    break;
+                }
+            }
+            if(!handled){
+                error = true;
+            }
+        }
+
+        if(error){
+            if(console.error){
+                console.error("Invalid date format");
+            }
+        }
+
+        var check = function(value) {
+            var values = {};
+
+            var i = 0;
+            var current_component = null;
+            var current_component_value = null;
+            var component_index = -1;
+            var error = false;
+            while(i < value.length && !error){
+                component_index++;
+                current_component = format_array[component_index];
+                current_component_value = valid_components[current_component];
+
+                if(current_component_value===0){
+                    //Expecting a particular delimiter
+                    if(value[i]!==current_component){
+                        error = true;
+                        break;
+                    } else {
+                        i++;
+                        continue;
+                    }
+                }
+
+                var min = current_component_value[0];
+                var max = current_component_value[current_component_value.length-1];
+
+                var incremented = false;
+                var numeric_string = "";
+                for(var n = 0; n < max; n++){
+                    var character = value[i + n];
+                    if(character===undefined){
+                        break;
+                    }
+                    var char_code = character.charCodeAt(0);
+                    if(char_code < 48 || char_code > 57){
+                        if(n===min){
+                            //Stopped at min
+                            break;
+                        } else {
+                            error = true;
+                            break;
+                        }
+                    } else {
+                        numeric_string+=character;
+                    }
+                }
+                
+                i += n;
+
+                if(error){
+                    break;
+                }
+
+                var int_val = parseInt(numeric_string);
+
+                if(current_component==='YYYY' || current_component==='YY'){
+                    values['year'] = int_val;
+                } else if(current_component==='MM' || current_component==='M'){
+                    values['month'] = int_val;
+                } else if(current_component==='DD' || current_component==='D'){
+                    values['day'] = int_val;
+                }
+
+            }
+
+            if(error){
+                return FieldVal.create_error(BasicVal.errors.invalid_date_format, flags);
+            }
+
+
+            if(values.month!==undefined){
+                var month = values.month;
+                if(month>12){
+                    return FieldVal.create_error(BasicVal.errors.invalid_date, flags);
+                }
+
+                if(values.day){
+                    var day = values.day;
+
+                    if(values.year){
+                        var year = values.year;
+                        if(month==2){
+                            if(year%400==0 || (year%100!=0 && year%4==0)){
+                                if(day>29){
+                                    return FieldVal.create_error(BasicVal.errors.invalid_date, flags);
+                                }
+                            } else {
+                                if(day>28){
+                                    return FieldVal.create_error(BasicVal.errors.invalid_date, flags);
+                                }
+                            }
+                        }
+                    }
+    
+                    if(month===4 || month===6 || month===9 || month===11){
+                        if(day>30){
+                            return FieldVal.create_error(BasicVal.errors.invalid_date, flags);
+                        }
+                    } else if(month===2){
+                        if(day>29){
+                            return FieldVal.create_error(BasicVal.errors.invalid_date, flags);
+                        }
+                    } else {
+                        if(day>31){
+                            return FieldVal.create_error(BasicVal.errors.invalid_date, flags);
+                        }
+                    }
+                }
+            } else {
+                //Don't have month, but days shouldn't be greater than 31 anyway
+                if(values.day){
+                    if(values.day>31){
+                        return FieldVal.create_error(BasicVal.errors.invalid_date, flags);
+                    }
+                }
+            }
+
+            //SUCCESS
+            return;
+
         }
         if(flags){
             flags.check = check;

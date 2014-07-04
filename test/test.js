@@ -45,6 +45,33 @@ describe('FieldVal', function() {
             assert.equal(null, my_validator.end());
         })
 
+        it('should return a date string when an string of valid syntax is present', function() {
+            var my_validator = new FieldVal({
+                "my_date_1": "04/07/2014",
+                "my_date_2": "1/2/34",
+                "my_date_3": "1-2-34",
+                "my_date_4": "29:2",
+                "my_date_5": "2014 05 27",
+                "my_date_6": "07/30/14",
+                "my_date_7": "30/07/14",
+                "my_date_8": "29/02/04"
+            })
+
+            var my_date_check = bval.date("DD/MM/YYYY");
+
+            logger.log("Example 1: ", my_date_check("11/20//1992"));
+
+            assert.equal("04/07/2014", my_validator.get("my_date_1", bval.string(true), bval.date("DD/MM/YYYY")));
+            assert.equal("1/2/34", my_validator.get("my_date_2", bval.string(true), bval.date("D/M/YY")));
+            assert.equal("1-2-34", my_validator.get("my_date_3", bval.string(true), bval.date("D-M-YY")));
+            assert.equal("29:2", my_validator.get("my_date_4", bval.string(true), bval.date("D:M")));
+            assert.equal("2014 05 27", my_validator.get("my_date_5", bval.string(true), bval.date("YYYY MM DD")));
+            assert.equal("07/30/14", my_validator.get("my_date_6", bval.string(true), bval.date("MM/DD/YY")));
+            assert.equal("30/07/14", my_validator.get("my_date_7", bval.string(true), bval.date("DD/MM/YY")));
+            assert.equal("30/07/14", my_validator.get("my_date_8", bval.string(true), bval.date("DD/MM/YYYY")));
+            assert.equal(null, my_validator.end());
+        })
+
         it('should return a float when an float is requested and the value is a float string and parse flag is true', function() {
             var my_validator = new FieldVal({
                 "my_float": "43.5"
