@@ -13,12 +13,44 @@ describe('FieldVal', function() {
             assert.equal(null, my_validator.end());
         })
 
+        it('should not continue if required=false', function(){
+            var my_validator = new FieldVal({
+                "another_value": 17
+            })
+            var called = false;
+            my_validator.get("my_value", bval.integer({required: false}), function(value){
+                called = true;
+            });
+            assert.equal(called, false);
+        })
+
         it('should return value when an optional value is present', function() {
             var my_validator = new FieldVal({
                 "my_value": 17
             })
             assert.equal(17, my_validator.get("my_value", bval.integer(false)));
             assert.equal(null, my_validator.end());
+        })
+
+        it('array iteration and emit', function() {
+            var my_validator = new FieldVal({
+                "my_value": [1,2,3,4,5]
+            })
+
+            var my_value = my_validator.get("my_value", bval.array(true), bval.each(function(value, index){
+                var error = bval.integer(true).check(value);
+                return error;
+            }), function(value, emit){
+                var count = 0;
+                for(var i = 0; i < value.length; i++){
+                    count += value[i];
+                }
+                emit(count);
+            })
+
+            var val_error = my_validator.end();
+            assert.equal(15, my_value);
+            assert.equal(null, val_error);
         })
 
         it('should return an integer when an integer is requested and the value is an integer string and parse flag is true', function() {
@@ -59,8 +91,6 @@ describe('FieldVal', function() {
 
             var my_date_check = bval.date("DD/MM/YYYY");
 
-            logger.log("Example 1: ", my_date_check("11/20//1992"));
-
             assert.equal("04/07/2014", my_validator.get("my_date_1", bval.string(true), bval.date("DD/MM/YYYY")));
             assert.equal("1/2/34", my_validator.get("my_date_2", bval.string(true), bval.date("D/M/YY")));
             assert.equal("1-2-34", my_validator.get("my_date_3", bval.string(true), bval.date("D-M-YY")));
@@ -68,7 +98,7 @@ describe('FieldVal', function() {
             assert.equal("2014 05 27", my_validator.get("my_date_5", bval.string(true), bval.date("YYYY MM DD")));
             assert.equal("07/30/14", my_validator.get("my_date_6", bval.string(true), bval.date("MM/DD/YY")));
             assert.equal("30/07/14", my_validator.get("my_date_7", bval.string(true), bval.date("DD/MM/YY")));
-            assert.equal("30/07/14", my_validator.get("my_date_8", bval.string(true), bval.date("DD/MM/YYYY")));
+            assert.equal("29/02/04", my_validator.get("my_date_8", bval.string(true), bval.date("DD/MM/YYYY")));
             assert.equal(null, my_validator.end());
         })
 

@@ -150,7 +150,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     length: function(len, flags) {
         var check = function(value) {
@@ -162,7 +164,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     min_length: function(min_len, flags) {
         var check = function(value) {
@@ -174,7 +178,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     max_length: function(max_len, flags) {
         var check = function(value) {
@@ -186,7 +192,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     minimum: function(min_val, flags) {
         var check = function(value) {
@@ -198,7 +206,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     maximum: function(max_val, flags) {
         var check = function(value) {
@@ -210,7 +220,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     range: function(min_val, max_val, flags) {
         //Effectively combines minimum and maximum
@@ -225,7 +237,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     one_of: function(array, flags) {
         var valid_values = [];
@@ -252,7 +266,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     not_empty: function(trim, flags) {
         var check = function(value) {
@@ -272,7 +288,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     prefix: function(prefix, flags) {
         var check = function(value) {
@@ -288,7 +306,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     suffix: function(suffix, flags) {
         var check = function(value) {
@@ -304,7 +324,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     each: function(on_each, flags) {
         var check = function(array, stop) {
@@ -326,7 +348,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     email: function(flags){
         var check = function(value) {
@@ -339,7 +363,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     date: function(format, flags){
 
@@ -508,7 +534,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     },
     url: function(flags){
         var check = function(value) {
@@ -521,7 +549,9 @@ var BasicVal = {
             flags.check = check;
             return flags
         }
-        return check;
+        return {
+            check: check
+        }
     }
 }
 
