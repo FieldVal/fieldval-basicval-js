@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "tracer" : "*",
-        "fieldval" : "*"
+        "fieldval" : "FieldVal/fieldval-js#develop"
     },
     "devDependencies": {
         "gulp-imports" : "MarcusLongmuir/gulp-imports",
