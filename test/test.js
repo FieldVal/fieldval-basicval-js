@@ -102,6 +102,31 @@ describe('FieldVal', function() {
             assert.equal(null, my_validator.end());
         })
 
+        it('should return a url string when an string of valid syntax is present', function() {
+            var my_validator = new FieldVal({
+                "my_url_1": "http://example.com",
+                "my_url_2": "https://example.com",
+                "my_url_3": "http://www.example.com",
+                "my_url_4": "https://www.example.com/",
+                "my_url_5": "http://www.example.com/path/",
+                "my_url_6": "http://www.example.com/path/resource.type",
+                "my_url_7": "http://127.0.0.1/images/example.jpg",
+                "my_url_8": "https://127.0.0.1/images/example.jpg"
+            })
+
+            var my_date_check = bval.date("DD/MM/YYYY");
+
+            assert.equal("http://example.com", my_validator.get("my_url_1", bval.string(true), bval.url()));
+            assert.equal("https://example.com", my_validator.get("my_url_2", bval.string(true), bval.url()));
+            assert.equal("http://www.example.com", my_validator.get("my_url_3", bval.string(true), bval.url()));
+            assert.equal("https://www.example.com/", my_validator.get("my_url_4", bval.string(true), bval.url()))
+            assert.equal("http://www.example.com/path/", my_validator.get("my_url_5", bval.string(true), bval.url()));
+            assert.equal("http://www.example.com/path/resource.type", my_validator.get("my_url_6", bval.string(true), bval.url()));
+            assert.equal("http://127.0.0.1/images/example.jpg", my_validator.get("my_url_7", bval.string(true), bval.url()));
+            assert.equal("https://127.0.0.1/images/example.jpg", my_validator.get("my_url_8", bval.string(true), bval.url()));
+            assert.equal(null, my_validator.end());
+        })
+
         it('should return a float when an float is requested and the value is a float string and parse flag is true', function() {
             var my_validator = new FieldVal({
                 "my_float": "43.5"
