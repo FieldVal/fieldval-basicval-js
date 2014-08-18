@@ -16,31 +16,31 @@ var BasicVal = {
         too_short: function(min_len) {
             return {
                 error: 100,
-                error_message: "Length is less than " + min_len
+                error_message: "Length is less than " + min_len + "."
             }
         },
         too_long: function(max_len) {
             return {
                 error: 101,
-                error_message: "Length is greater than " + max_len
+                error_message: "Length is greater than " + max_len + "."
             }
         },
         too_small: function(min_val) {
             return {
                 error: 102,
-                error_message: "Value is less than " + min_val
+                error_message: "Value is less than " + min_val + "."
             }
         },
         too_large: function(max_val) {
             return {
                 error: 103,
-                error_message: "Value is greater than " + max_val
+                error_message: "Value is greater than " + max_val + "."
             }
         },
         not_in_list: function() {
             return {
                 error: 104,
-                error_message: "Value is not a valid choice"
+                error_message: "Value is not a valid choice."
             }
         },
         cannot_be_empty: function() {
@@ -52,7 +52,7 @@ var BasicVal = {
         no_prefix: function(prefix) {
             return {
                 error: 106,
-                error_message: "Value does not have prefix: " + prefix
+                error_message: "Value does not have prefix: " + prefix + "."
             }
         },
         invalid_email: function() {
@@ -70,13 +70,13 @@ var BasicVal = {
         incorrect_length: function(len){
             return {
                 error: 109,
-                error_message: "Length is not equal to " + len
+                error_message: "Length is not equal to " + len + "."
             }
         },
         no_suffix: function(suffix) {
             return {
                 error: 110,
-                error_message: "Value does not have suffix: " + suffix
+                error_message: "Value does not have suffix: " + suffix + "."
             }
         },
         invalid_date_format: function() {
