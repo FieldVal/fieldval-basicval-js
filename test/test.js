@@ -3,8 +3,8 @@ var FieldVal = require('fieldval');
 var bval = require("../fieldval-basicval");
 var assert = require("assert")
 
-describe('FieldVal', function() {
-    describe('get()', function() {
+describe('BasicVal', function() {
+    describe('integer()', function() {
         it('should return value when the value is present', function() {
             var my_validator = new FieldVal({
                 "my_value": 13
@@ -32,6 +32,25 @@ describe('FieldVal', function() {
             assert.equal(null, my_validator.end());
         })
 
+        it('should return an integer when an integer is requested and the value is an integer string and parse flag is true', function() {
+            var my_validator = new FieldVal({
+                "my_integer": "26"
+            })
+            assert.equal(26, my_validator.get("my_integer", bval.integer(true, {parse: true})));
+            assert.equal(null, my_validator.end());
+        })
+
+        it('should create an error when an integer is requested and the value is an integer string, but parse flag is not set to true', function() {
+            var my_validator = new FieldVal({
+                "my_integer": "26"
+            })
+            assert.equal(null, my_validator.get("my_integer", bval.integer(true)));
+            assert.deepEqual({"invalid":{"my_integer":{"error_message":"Incorrect field type. Expected integer.","error":2,"expected":"integer","received":"string"}},"error_message":"One or more errors.","error":0}, my_validator.end());
+        })
+    })
+
+    describe('array()', function() {
+
         it('array iteration and emit', function() {
             var my_validator = new FieldVal({
                 "my_value": [1,2,3,4,5]
@@ -52,22 +71,9 @@ describe('FieldVal', function() {
             assert.equal(15, my_value);
             assert.equal(null, val_error);
         })
+    })
 
-        it('should return an integer when an integer is requested and the value is an integer string and parse flag is true', function() {
-            var my_validator = new FieldVal({
-                "my_integer": "26"
-            })
-            assert.equal(26, my_validator.get("my_integer", bval.integer(true, {parse: true})));
-            assert.equal(null, my_validator.end());
-        })
-
-        it('should create an error when an integer is requested and the value is an integer string, but parse flag is not set to true', function() {
-            var my_validator = new FieldVal({
-                "my_integer": "26"
-            })
-            assert.equal(null, my_validator.get("my_integer", bval.integer(true)));
-            assert.deepEqual({"invalid":{"my_integer":{"error_message":"Incorrect field type. Expected integer.","error":2,"expected":"integer","received":"string"}},"error_message":"One or more errors.","error":0}, my_validator.end());
-        })
+    describe('email()', function() {
 
         it('should return an email when an string of valid syntax is present', function() {
             var my_validator = new FieldVal({
@@ -76,7 +82,9 @@ describe('FieldVal', function() {
             assert.equal("example-user@test.com", my_validator.get("my_email", bval.string(true), bval.email()));
             assert.equal(null, my_validator.end());
         })
+    })
 
+    describe('date()', function() {
         it('should return a date string when an string of valid syntax is present', function() {
             var my_validator = new FieldVal({
                 "my_date_1": "04/07/2014",
@@ -100,7 +108,10 @@ describe('FieldVal', function() {
             assert.equal("30/07/14", my_validator.get("my_date_7", bval.string(true), bval.date("DD/MM/YY")));
             assert.equal("29/02/04", my_validator.get("my_date_8", bval.string(true), bval.date("DD/MM/YYYY")));
             assert.equal(null, my_validator.end());
-        })
+        }) 
+    })
+
+    describe('url()', function() {
 
         it('should return a url string when an string of valid syntax is present', function() {
             var my_validator = new FieldVal({
@@ -126,6 +137,9 @@ describe('FieldVal', function() {
             assert.equal("https://127.0.0.1/images/example.jpg", my_validator.get("my_url_8", bval.string(true), bval.url()));
             assert.equal(null, my_validator.end());
         })
+    })
+
+    describe('float()', function() {
 
         it('should return a float when an float is requested and the value is a float string and parse flag is true', function() {
             var my_validator = new FieldVal({
@@ -158,6 +172,9 @@ describe('FieldVal', function() {
             ));
             assert.deepEqual({"invalid":{"my_float":{"error":1000,"error_message":"Please enter a number"}},"error_message":"One or more errors.","error":0}, my_validator.end());
         })
+    })
+
+    describe('string()', function() {
 
         it('should create a custom error when one is provided (string)', function() {
             var my_validator = new FieldVal({

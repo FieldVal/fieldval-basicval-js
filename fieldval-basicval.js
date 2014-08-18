@@ -2,13 +2,8 @@ var logger;
 if((typeof require) === 'function'){
     logger = require('tracer').console();
 }
-
-var _validator_ref;
-
 if((typeof require) === 'function'){
-    _validator_ref = require("fieldval");
-} else {
-    _validator_ref = FieldVal;
+    FieldVal = require("fieldval");
 }
 
 var BasicVal = {
@@ -90,6 +85,27 @@ var BasicVal = {
                 error: 112,
                 error_message: "Invalid date."
             }
+        },
+        not_equal: function(match){
+            return {
+                error: 113,
+                error_message: "Not equal to " + match + ".",
+
+            }  
+        }
+    },
+    equal_to: function(match, flags){
+        var check = function(value) {
+            if (value!==match) {
+                return FieldVal.create_error(BasicVal.errors.not_equal, flags, match)
+            }
+        }
+        if(flags){
+            flags.check = check;
+            return flags
+        }
+        return {
+            check: check
         }
     },
     merge_required_and_flags: function(required, flags){
@@ -104,28 +120,28 @@ var BasicVal = {
         return flags;
     },
     integer: function(required, flags){
-        return _validator_ref.type("integer",BasicVal.merge_required_and_flags(required, flags));
+        return FieldVal.type("integer",BasicVal.merge_required_and_flags(required, flags));
     },
     number: function(required, flags){
-        return _validator_ref.type("number",BasicVal.merge_required_and_flags(required, flags));
+        return FieldVal.type("number",BasicVal.merge_required_and_flags(required, flags));
     },
     array: function(required, flags){
-        return _validator_ref.type("array",BasicVal.merge_required_and_flags(required, flags));
+        return FieldVal.type("array",BasicVal.merge_required_and_flags(required, flags));
     },
     object: function(required, flags){
-        return _validator_ref.type("object",BasicVal.merge_required_and_flags(required, flags));
+        return FieldVal.type("object",BasicVal.merge_required_and_flags(required, flags));
     },
     float: function(required, flags){
-        return _validator_ref.type("float",BasicVal.merge_required_and_flags(required, flags));
+        return FieldVal.type("float",BasicVal.merge_required_and_flags(required, flags));
     },
     boolean: function(required, flags){
-        return _validator_ref.type("boolean",BasicVal.merge_required_and_flags(required, flags));
+        return FieldVal.type("boolean",BasicVal.merge_required_and_flags(required, flags));
     },
     string: function(required, flags){
         flags = BasicVal.merge_required_and_flags(required, flags);
         var check = function(value, emit) {
 
-            var core_check = _validator_ref.type("string",flags);
+            var core_check = FieldVal.type("string",flags);
             if(typeof core_check === 'object'){
                 //Passing flags turns the check into an object
                 core_check = core_check.check;
@@ -140,9 +156,9 @@ var BasicVal = {
             }
             if (value.length === 0) {
                 if(required || required===undefined){
-                    return _validator_ref.REQUIRED_ERROR;
+                    return FieldVal.REQUIRED_ERROR;
                 } else {
-                    return _validator_ref.NOT_REQUIRED_BUT_MISSING;
+                    return FieldVal.NOT_REQUIRED_BUT_MISSING;
                 }
             }
         }
@@ -330,7 +346,7 @@ var BasicVal = {
     },
     each: function(on_each, flags) {
         var check = function(array, stop) {
-            var validator = new _validator_ref(null);
+            var validator = new FieldVal(null);
             for (var i = 0; i < array.length; i++) {
                 var value = array[i];
 

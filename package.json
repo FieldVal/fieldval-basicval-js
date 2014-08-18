@@ -18,6 +18,7 @@
         "gulp-imports" : "MarcusLongmuir/gulp-imports",
         "gulp-util": "^2.2.14",
         "gulp": "^3.6.1",
+        "gulp-mocha": "^1.0.0",
         "gulp-nodemon" : "*",
         "gulp-watch": "^0.6.2",
         "gulp-uglify": "^0.2.1",
