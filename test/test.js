@@ -1,6 +1,6 @@
 var logger = require("tracer").console();
 var FieldVal = require('fieldval');
-var bval = require("../fieldval-basicval");
+var bval = require("../src/BasicVal");
 var assert = require("assert")
 
 describe('BasicVal', function() {
@@ -45,7 +45,18 @@ describe('BasicVal', function() {
                 "my_integer": "26"
             })
             assert.equal(null, my_validator.get("my_integer", bval.integer(true)));
-            assert.deepEqual({"invalid":{"my_integer":{"error_message":"Incorrect field type. Expected integer.","error":2,"expected":"integer","received":"string"}},"error_message":"One or more errors.","error":0}, my_validator.end());
+            assert.deepEqual({
+                "invalid":{
+                    "my_integer":{
+                        "error_message":"Incorrect field type. Expected integer.",
+                        "error":2,
+                        "expected":"integer",
+                        "received":"string"
+                    }
+                },
+                "error_message":"One or more errors.",
+                "error":0
+            }, my_validator.end());
         })
     })
 
@@ -59,6 +70,8 @@ describe('BasicVal', function() {
             var my_value = my_validator.get("my_value", bval.array(true), bval.each(function(value, index){
                 var error = bval.integer(true).check(value);
                 return error;
+            },{
+                //Flags
             }), function(value, emit){
                 var count = 0;
                 for(var i = 0; i < value.length; i++){
@@ -71,6 +84,147 @@ describe('BasicVal', function() {
             assert.equal(15, my_value);
             assert.equal(null, val_error);
         })
+
+        it('should return any errors thrown by the iterator', function() {
+            var my_validator = new FieldVal({
+                "my_value": [1,2,"three",4,5]
+            })
+
+            var my_value = my_validator.get("my_value", bval.array(true), bval.each(function(value, index){
+                var error = bval.integer(true).check(value);
+                return error;
+            }));
+
+            var val_error = my_validator.end();
+            console.log(JSON.stringify(val_error,null,4));
+            assert.equal(null, my_value);
+            assert.deepEqual({
+                "invalid": {
+                    "my_value": {
+                        "invalid": {
+                            "2": {
+                                "error_message": "Incorrect field type. Expected integer.",
+                                "error": 2,
+                                "expected": "integer",
+                                "received": "string"
+                            }
+                        },
+                        "error_message": "One or more errors.",
+                        "error": 0
+                    }
+                },
+                "error_message": "One or more errors.",
+                "error": 0
+            }, val_error);
+        })
+    })
+
+    describe('minimum()', function() {
+
+        it('should return a value when it is above the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": 11
+            })
+            assert.equal(11, my_validator.get("my_value", bval.integer(true), bval.minimum(10)));
+            assert.equal(null, my_validator.end());
+        })
+
+        it('should return a value when it is equal to the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": 10
+            })
+            assert.equal(10, my_validator.get("my_value", bval.integer(true), bval.minimum(10,{})));
+            assert.equal(null, my_validator.end());
+        })
+
+        it('should create an error when the value is below the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": 9
+            })
+            assert.equal(null, my_validator.get("my_value", bval.integer(true), bval.minimum(10)));
+            assert.deepEqual({
+                "invalid":{
+                    "my_value":{
+                        "error":102,
+                        "error_message":"Value is less than 10"
+                    }
+                },
+                "error_message":"One or more errors.",
+                "error":0
+            }, my_validator.end());
+        })
+    })
+
+    describe('maximum()', function() {
+
+        it('should return a value when it is below the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": 9
+            })
+            assert.equal(9, my_validator.get("my_value", bval.integer(true), bval.maximum(10)));
+            assert.equal(null, my_validator.end());
+        })
+
+        it('should return a value when it is equal to the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": 10
+            })
+            assert.equal(10, my_validator.get("my_value", bval.integer(true), bval.maximum(10,{})));
+            assert.equal(null, my_validator.end());
+        })
+
+        it('should create an error when the value is below the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": 11
+            })
+            assert.equal(null, my_validator.get("my_value", bval.integer(true), bval.maximum(10)));
+            assert.deepEqual({
+                "invalid":{
+                    "my_value":{
+                        "error":103,
+                        "error_message":"Value is greater than 10"
+                    }
+                },
+                "error_message":"One or more errors.",
+                "error":0
+            }, my_validator.end());
+        })
+    })
+
+    describe('min_length()', function() {
+
+        it('should return a value when it is longer than the specified length', function() {
+            var my_validator = new FieldVal({
+                "my_value": "ABCDEF"
+            })
+            assert.equal("ABCDEF", my_validator.get("my_value", bval.string(true), bval.min_length(5)));
+            assert.equal(null, my_validator.end());
+        })
+
+        it('should return a value when it\'s length is equal to the specified length', function() {
+            var my_validator = new FieldVal({
+                "my_value": "ABCDE"
+            })
+            assert.equal("ABCDE", my_validator.get("my_value", bval.string(true), bval.min_length(5,{})));
+            assert.equal(null, my_validator.end());
+        })
+
+        it('should create an error when the value is below the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": "ABCD"
+            })
+            assert.equal(null, my_validator.get("my_value", bval.string(true), bval.min_length(5)));
+            assert.deepEqual({
+                "invalid":{
+                    "my_value":{
+                        "error":100,
+                        "error_message":"Length is less than 5"
+                    }
+                },
+                "error_message":"One or more errors.",
+                "error":0
+            }, my_validator.end());
+        })
     })
 
     describe('email()', function() {
@@ -79,8 +233,25 @@ describe('BasicVal', function() {
             var my_validator = new FieldVal({
                 "my_email": "example-user@test.com"
             })
-            assert.equal("example-user@test.com", my_validator.get("my_email", bval.string(true), bval.email()));
+            assert.equal("example-user@test.com", my_validator.get("my_email", bval.string(true), bval.email({})));
             assert.equal(null, my_validator.end());
+        })
+
+        it('should return an email when an string of valid syntax is present', function() {
+            var my_validator = new FieldVal({
+                "my_email": "example@user"
+            })
+            assert.equal(null, my_validator.get("my_email", bval.string(true), bval.email()));
+            assert.deepEqual({
+                "invalid":{
+                    "my_email":{
+                        "error":107,
+                        "error_message":"Invalid email address format."
+                    }
+                },
+                "error_message":"One or more errors.",
+                "error":0
+            }, my_validator.end());
         })
     })
 
