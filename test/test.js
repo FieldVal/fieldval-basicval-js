@@ -236,7 +236,7 @@ describe('BasicVal', function() {
             assert.equal(null, my_validator.end());
         })
 
-        it('should return an email when an string of valid syntax is present', function() {
+        it('should create an error when a string of invalid syntax is present', function() {
             var my_validator = new FieldVal({
                 "my_email": "example@user"
             })
