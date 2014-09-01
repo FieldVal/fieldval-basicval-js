@@ -226,6 +226,62 @@ describe('BasicVal', function() {
         })
     })
 
+    describe('multiple()', function() {
+
+        it('should return an error if none of the options are valid', function() {
+            var my_validator = new FieldVal({
+                "my_string": "ABCDE"
+            })
+
+            //Up to 3 characters, or 6+
+            assert.equal(null, my_validator.get("my_string", /*bval.string(true), */bval.multiple(
+                [
+                   bval.max_length(3)
+                    ,
+                    bval.min_length(6)
+                ]
+            )));
+            assert.deepEqual({
+                "invalid":{
+                    "my_string":{
+                        "error":115,
+                        "error_message":"None of the options were valid."
+                    }
+                },
+                "error_message":"One or more errors.",
+                "error": 0
+            }, my_validator.end());
+        })
+
+        it('should return the valid value if one of the options is valid (and use emit functions)', function() {
+            var my_validator = new FieldVal({
+                "my_string": "ABCDEFG"
+            })
+
+            var shorter, longer;
+
+            //Up to 3 characters, or 6+
+            assert.equal("ABCDEFG", my_validator.get("my_string", /*bval.string(true), */bval.multiple(
+                [
+                    [
+                        bval.max_length(3), function(value){
+                            shorter = value;
+                        }
+                    ]
+                    ,
+                    [
+                        bval.min_length(6), function(value){
+                            longer = value;
+                        }
+                    ]
+                ]
+            )));
+            assert.equal(undefined, shorter);
+            assert.equal("ABCDEFG", longer);
+            assert.equal(null, my_validator.end());
+        })
+    })
+
     describe('email()', function() {
 
         it('should return an email when an string of valid syntax is present', function() {

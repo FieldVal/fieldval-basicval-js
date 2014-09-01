@@ -82,8 +82,26 @@ var BasicVal = {
                 error_message: "Not equal to " + match + ".",
 
             }  
-        }
+        },
         //114 in DateVal
+        no_valid_option: function(){//Should be overriden in most cases
+            return {
+                error: 115,
+                error_message: "None of the options were valid.",
+            }  
+        },
+        contains_whitespace: function(){
+            return {
+                error: 116,
+                error_message: "Contains whitespace."
+            }
+        },
+        must_start_with_letter: function(){
+            return {
+                error: 117,
+                error_message: "Must start with a letter."
+            }  
+        }
     },
     equal_to: function(match, flags){
         var check = function(value) {
@@ -193,6 +211,20 @@ var BasicVal = {
         var check = function(value) {
             if (value.length > max_len) {
                 return FieldVal.create_error(BasicVal.errors.too_long, flags, max_len);
+            }
+        }
+        if(flags){
+            flags.check = check;
+            return flags
+        }
+        return {
+            check: check
+        }
+    },
+    no_whitespace: function(flags) {
+        var check = function(value) {
+            if (/\s/.test(value)){
+                return FieldVal.create_error(BasicVal.errors.contains_whitespace, flags, max_len);
             }
         }
         if(flags){
@@ -317,6 +349,25 @@ var BasicVal = {
             check: check
         }
     },
+    start_with_letter: function(flags) {
+        var check = function(value) {
+            if (value.length > 0) {
+                var char_code = value.charCodeAt(0);
+                if( !((char_code >= 65 && char_code <= 90) || (char_code >= 97 && char_code <= 122))){
+                    return FieldVal.create_error(BasicVal.errors.must_start_with_letter, flags);
+                }
+            } else {
+                return FieldVal.create_error(BasicVal.errors.must_start_with_letter, flags);
+            }
+        }
+        if(flags){
+            flags.check = check;
+            return flags
+        }
+        return {
+            check: check
+        }
+    },
     suffix: function(suffix, flags) {
         var check = function(value) {
             if (value.length >= suffix.length) {
@@ -350,6 +401,38 @@ var BasicVal = {
             if(error!=null){
                 return error;
             }
+        }
+        if(flags){
+            flags.check = check;
+            return flags
+        }
+        return {
+            check: check
+        }
+    },
+    multiple: function(options, flags){
+
+        options = options || [];
+        if(options.length===0){
+            console.error("BasicVal.multiple called without options.");
+        }
+
+        var check = function(value, emit){
+            for(var i = 0; i < options.length; i++){
+                var option = options[i];
+
+                var emitted_value;
+                var option_error = FieldVal.use_checks(value, option, null, null, function(emitted){
+                    emitted_value = emitted;
+                })
+                if(!option_error){
+                    if(emitted_value!==undefined){
+                        emit(emitted_value);
+                    }
+                    return null;
+                }
+            }
+            return FieldVal.create_error(BasicVal.errors.no_valid_option, flags);
         }
         if(flags){
             flags.check = check;
