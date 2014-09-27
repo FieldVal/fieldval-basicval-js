@@ -199,16 +199,16 @@
     <h1>Code coverage report for <span class="entity">src/BasicVal.js</span></h1>
     <h2>
         
-        Statements: <span class="metric">49.54% <small>(107 / 216)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Statements: <span class="metric">48.6% <small>(104 / 214)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Branches: <span class="metric">37.9% <small>(47 / 124)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">36.67% <small>(44 / 120)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
         Functions: <span class="metric">49.15% <small>(29 / 59)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         
-        Lines: <span class="metric">49.3% <small>(106 / 215)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">48.36% <small>(103 / 213)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
         
         Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
     </h2>
@@ -697,9 +697,13 @@
 479
 480
 481
-482</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">1</span>
+482
+483
+484</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-yes">1</span>
@@ -1098,7 +1102,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">2</span>
-<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2</span>
@@ -1114,20 +1118,20 @@
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
 <span class="cline-any cline-yes">4</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4</span>
-<span class="cline-any cline-yes">4</span>
-<span class="cline-any cline-yes">4</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4</span>
 <span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1178,10 +1182,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1</span>
 <span class="cline-any cline-yes">1</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var logger;
-<span class="missing-if-branch" title="else path not taken" >E</span>if((typeof require) === 'function'){
-    logger = require('tracer').console();
-}
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// var logger;
+// if((typeof require) === 'function'){
+//     logger = require('tracer').console();
+// }
+&nbsp;
+/* istanbul ignore if */
 <span class="missing-if-branch" title="else path not taken" >E</span>if((typeof require) === 'function'){
     FieldVal = require("fieldval");
 }
@@ -1192,67 +1198,67 @@ var BasicVal = {
             return {
                 error: 100,
                 error_message: "Length is less than " + min_len
-            }
+            };
         },
         too_long: function(max_len) {
             return {
                 error: 101,
                 error_message: "Length is greater than " + max_len
-            }
+            };
         },
         too_small: function(min_val) {
             return {
                 error: 102,
                 error_message: "Value is less than " + min_val
-            }
+            };
         },
         too_large: function(max_val) {
             return {
                 error: 103,
                 error_message: "Value is greater than " + max_val
-            }
+            };
         },
         not_in_list: <span class="fstat-no" title="function not covered" >function() {</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
                 error: 104,
                 error_message: "Value is not a valid choice"
-            }
+            };
         },
         cannot_be_empty: <span class="fstat-no" title="function not covered" >function() {</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
                 error: 105,
                 error_message: "Value cannot be empty."
-            }
+            };
         },
         no_prefix: <span class="fstat-no" title="function not covered" >function(prefix) {</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
                 error: 106,
                 error_message: "Value does not have prefix: " + prefix
-            }
+            };
         },
         invalid_email: function() {
             return {
                 error: 107,
                 error_message: "Invalid email address format."
-            }
+            };
         },
         invalid_url: <span class="fstat-no" title="function not covered" >function() {</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
                 error: 108,
                 error_message: "Invalid url format."
-            }
+            };
         },
         incorrect_length: <span class="fstat-no" title="function not covered" >function(len){</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
                 error: 109,
                 error_message: "Length is not equal to " + len
-            }
+            };
         },
         no_suffix: <span class="fstat-no" title="function not covered" >function(suffix) {</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
                 error: 110,
                 error_message: "Value does not have suffix: " + suffix
-            }
+            };
         },
         //111 in DateVal
         //112 in DateVal
@@ -1261,41 +1267,41 @@ var BasicVal = {
                 error: 113,
                 error_message: "Not equal to " + match + ".",
 &nbsp;
-            }  
+            };
         },
         //114 in DateVal
         no_valid_option: function(){//Should be overriden in most cases
             return {
                 error: 115,
                 error_message: "None of the options were valid.",
-            }  
+            };
         },
         contains_whitespace: <span class="fstat-no" title="function not covered" >function(){</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
                 error: 116,
                 error_message: "Contains whitespace."
-            }
+            };
         },
         must_start_with_letter: <span class="fstat-no" title="function not covered" >function(){</span>
 <span class="cstat-no" title="statement not covered" >            return {</span>
                 error: 117,
                 error_message: "Must start with a letter."
-            }  
+            };  
         }
     },
     equal_to: <span class="fstat-no" title="function not covered" >function(match, flags){</span>
 <span class="cstat-no" title="statement not covered" >        var check = <span class="fstat-no" title="function not covered" >function(value) {</span></span>
 <span class="cstat-no" title="statement not covered" >            if (value!==match) {</span>
-<span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.not_equal, flags, match)</span>
+<span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.not_equal, flags, match);</span>
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     merge_required_and_flags: function(required, flags){
         if((typeof required)==="object"){
@@ -1350,98 +1356,98 @@ var BasicVal = {
 <span class="cstat-no" title="statement not covered" >                    return FieldVal.NOT_REQUIRED_BUT_MISSING;</span>
                 }
             }
-        }
+        };
         <span class="missing-if-branch" title="else path not taken" >E</span>if(flags){
             flags.check = check;
-            return flags
+            return flags;
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     length: <span class="fstat-no" title="function not covered" >function(len, flags) {</span>
 <span class="cstat-no" title="statement not covered" >        var check = <span class="fstat-no" title="function not covered" >function(value) {</span></span>
 <span class="cstat-no" title="statement not covered" >            if (value.length!==len) {</span>
-<span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.incorrect_length, flags, len)</span>
+<span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.incorrect_length, flags, len);</span>
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     min_length: function(min_len, flags) {
         var check = function(value) {
             if (value.length &lt; min_len) {
-                return FieldVal.create_error(BasicVal.errors.too_short, flags, min_len)
+                return FieldVal.create_error(BasicVal.errors.too_short, flags, min_len);
             }
-        }
+        };
         if(flags){
             flags.check = check;
-            return flags
+            return flags;
         }
         return {
             check: check
-        }
+        };
     },
     max_length: function(max_len, flags) {
         var check = function(value) {
             <span class="missing-if-branch" title="else path not taken" >E</span>if (value.length &gt; max_len) {
                 return FieldVal.create_error(BasicVal.errors.too_long, flags, max_len);
             }
-        }
+        };
         <span class="missing-if-branch" title="if path not taken" >I</span>if(flags){
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
         return {
             check: check
-        }
+        };
     },
     no_whitespace: <span class="fstat-no" title="function not covered" >function(flags) {</span>
 <span class="cstat-no" title="statement not covered" >        var check = <span class="fstat-no" title="function not covered" >function(value) {</span></span>
 <span class="cstat-no" title="statement not covered" >            if (/\s/.test(value)){</span>
 <span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.contains_whitespace, flags, max_len);</span>
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     minimum: function(min_val, flags) {
         var check = function(value) {
             if (value &lt; min_val) {
                 return FieldVal.create_error(BasicVal.errors.too_small, flags, min_val);
             }
-        }
+        };
         if(flags){
             flags.check = check;
-            return flags
+            return flags;
         }
         return {
             check: check
-        }
+        };
     },
     maximum: function(max_val, flags) {
         var check = function(value) {
             if (value &gt; max_val) {
                 return FieldVal.create_error(BasicVal.errors.too_large, flags, max_val);
             }
-        }
+        };
         if(flags){
             flags.check = check;
-            return flags
+            return flags;
         }
         return {
             check: check
-        }
+        };
     },
     range: <span class="fstat-no" title="function not covered" >function(min_val, max_val, flags) {</span>
         //Effectively combines minimum and maximum
@@ -1451,14 +1457,14 @@ var BasicVal = {
             } else <span class="cstat-no" title="statement not covered" >if (value &gt; max_val) {</span>
 <span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.too_large, flags, max_val);</span>
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     one_of: <span class="fstat-no" title="function not covered" >function(array, flags) {</span>
 <span class="cstat-no" title="statement not covered" >        var valid_values = [];</span>
@@ -1472,22 +1478,22 @@ var BasicVal = {
                 }
             }
         } else {
-<span class="cstat-no" title="statement not covered" >            for(var i in array){</span>
-<span class="cstat-no" title="statement not covered" >                valid_values.push(i);</span>
+<span class="cstat-no" title="statement not covered" >            for(var k in array){</span>
+<span class="cstat-no" title="statement not covered" >                valid_values.push(k);</span>
             }
         }
 <span class="cstat-no" title="statement not covered" >        var check = <span class="fstat-no" title="function not covered" >function(value) {</span></span>
 <span class="cstat-no" title="statement not covered" >            if (valid_values.indexOf(value) === -1) {</span>
 <span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.not_in_list, flags);</span>
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     not_empty: <span class="fstat-no" title="function not covered" >function(trim, flags) {</span>
 <span class="cstat-no" title="statement not covered" >        var check = <span class="fstat-no" title="function not covered" >function(value) {</span></span>
@@ -1502,14 +1508,14 @@ var BasicVal = {
 <span class="cstat-no" title="statement not covered" >                    return FieldVal.create_error(BasicVal.errors.cannot_be_empty, flags);</span>
                 }
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     prefix: <span class="fstat-no" title="function not covered" >function(prefix, flags) {</span>
 <span class="cstat-no" title="statement not covered" >        var check = <span class="fstat-no" title="function not covered" >function(value) {</span></span>
@@ -1520,14 +1526,14 @@ var BasicVal = {
             } else {
 <span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.no_prefix, flags, prefix);</span>
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     start_with_letter: <span class="fstat-no" title="function not covered" >function(flags) {</span>
 <span class="cstat-no" title="statement not covered" >        var check = <span class="fstat-no" title="function not covered" >function(value) {</span></span>
@@ -1539,14 +1545,14 @@ var BasicVal = {
             } else {
 <span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.must_start_with_letter, flags);</span>
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     suffix: <span class="fstat-no" title="function not covered" >function(suffix, flags) {</span>
 <span class="cstat-no" title="statement not covered" >        var check = <span class="fstat-no" title="function not covered" >function(value) {</span></span>
@@ -1557,14 +1563,14 @@ var BasicVal = {
             } else {
 <span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.no_suffix, flags, suffix);</span>
             }
-        }
+        };
 <span class="cstat-no" title="statement not covered" >        if(flags){</span>
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
 <span class="cstat-no" title="statement not covered" >        return {</span>
             check: check
-        }
+        };
     },
     each: function(on_each, flags) {
         var check = function(array, stop) {
@@ -1573,54 +1579,54 @@ var BasicVal = {
                 var value = array[i];
 &nbsp;
                 var res = on_each(value,i);
-                if (res != null) {
+                if (res !== undefined) {
                     validator.invalid("" + i, res);
                 }
             }
             var error = validator.end();
-            if(error!=null){
+            <span class="missing-if-branch" title="else path not taken" >E</span>if(error!==undefined){
                 return error;
             }
-        }
+        };
         if(flags){
             flags.check = check;
-            return flags
+            return flags;
         }
         return {
             check: check
-        }
+        };
     },
     multiple: function(options, flags){
 &nbsp;
         options = options || <span class="branch-1 cbranch-no" title="branch not covered" >[];</span>
         <span class="missing-if-branch" title="if path not taken" >I</span>if(options.length===0){
 <span class="cstat-no" title="statement not covered" >            console.error("BasicVal.multiple called without options.");</span>
+<span class="cstat-no" title="statement not covered" >            return;</span>
         }
 &nbsp;
         var check = function(value, emit){
+            var emitted_value;
+            var emit_for_check = function(emitted){
+                emitted_value = emitted;
+            };
             for(var i = 0; i &lt; options.length; i++){
                 var option = options[i];
 &nbsp;
-                var emitted_value;
-                var option_error = FieldVal.use_checks(value, option, null, null, function(emitted){
-                    emitted_value = emitted;
-                })
+                var option_error = FieldVal.use_checks(value, option, null, null, emit_for_check);
                 if(!option_error){
-                    <span class="missing-if-branch" title="else path not taken" >E</span>if(emitted_value!==undefined){
-                        emit(emitted_value);
-                    }
-                    return null;
+                    emit(emitted_value);
+                    return undefined;
                 }
             }
             return FieldVal.create_error(BasicVal.errors.no_valid_option, flags);
-        }
+        };
         <span class="missing-if-branch" title="if path not taken" >I</span>if(flags){
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
         return {
             check: check
-        }
+        };
     },
     email: function(flags){
         var check = function(value) {
@@ -1628,14 +1634,14 @@ var BasicVal = {
             if(!re.test(value)){
                 return FieldVal.create_error(BasicVal.errors.invalid_email, flags);
             } 
-        }
+        };
         if(flags){
             flags.check = check;
-            return flags
+            return flags;
         }
         return {
             check: check
-        }
+        };
     },
     url: function(flags){
         var check = function(value) {
@@ -1643,16 +1649,16 @@ var BasicVal = {
             <span class="missing-if-branch" title="if path not taken" >I</span>if(!re.test(value)){
 <span class="cstat-no" title="statement not covered" >                return FieldVal.create_error(BasicVal.errors.invalid_url, flags);</span>
             } 
-        }
+        };
         <span class="missing-if-branch" title="if path not taken" >I</span>if(flags){
 <span class="cstat-no" title="statement not covered" >            flags.check = check;</span>
-<span class="cstat-no" title="statement not covered" >            return flags</span>
+<span class="cstat-no" title="statement not covered" >            return flags;</span>
         }
         return {
             check: check
-        }
+        };
     }
-}
+};
 &nbsp;
 BasicVal.email_regex = /^(([^&lt;&gt;()[\]\\.,;:\s@\"]+(\.[^&lt;&gt;()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 BasicVal.url_regex = /^(https?):\/\/(((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))|((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])))(:[1-9][0-9]+)?(\/)?([\/?].+)?$/;
@@ -1664,7 +1670,7 @@ BasicVal.url_regex = /^(https?):\/\/(((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|2
 
 </div>
 <div class="footer">
-    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 01 2014 20:01:05 GMT+0100 (BST)</div>
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Sep 14 2014 09:37:27 GMT+0100 (BST)</div>
 </div>
 
 <script src="../prettify.js"></script>
