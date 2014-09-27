@@ -67,18 +67,25 @@ describe('BasicVal', function() {
                 "my_value": [1,2,3,4,5]
             })
 
-            var my_value = my_validator.get("my_value", bval.array(true), bval.each(function(value, index){
-                var error = bval.integer(true).check(value);
-                return error;
-            },{
-                //Flags
-            }), function(value, emit){
-                var count = 0;
-                for(var i = 0; i < value.length; i++){
-                    count += value[i];
+            var my_value = my_validator.get(
+                "my_value", 
+                bval.array(true)
+                ,
+                bval.each(function(value, index){
+                    var error = bval.integer(true).check(value);
+                    return error;
+                },{
+                    //Flags
+                })
+                , 
+                function(value, emit){
+                    var count = 0;
+                    for(var i = 0; i < value.length; i++){
+                        count += value[i];
+                    }
+                    emit(count);
                 }
-                emit(count);
-            })
+            )
 
             var val_error = my_validator.end();
             assert.equal(15, my_value);

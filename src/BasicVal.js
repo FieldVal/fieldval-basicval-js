@@ -457,66 +457,61 @@ var BasicVal = (function(){
             };
         },
         each: function(on_each, flags) {
-            var check = function(array, emit, callback) {
-                
+            var check = function(array, stop) {
+                var validator = new FieldVal(null);
+                for (var i = 0; i < array.length; i++) {
+                    var value = array[i];
 
-                var i = 0;
-                var end = function(end_value){
-                    logger.log("end ",end_value);
 
-                    if(callback){
-                        callback(end_value);
-                    } else {
-                        to_return = end_value;
+                    var res = on_each(value,i);
+                    if (res != null) {
+                        validator.invalid("" + i, res);
                     }
                 }
+                var error = validator.end();
+                if(error!=null){
+                    return error;
+                }
+            }
+            if(flags){
+                flags.check = check;
+                return flags;
+            }
+            return {
+                check: check
+            };
+        },
+        each_async: function(on_each, flags) {
+            var check = function(array, emit, callback) {
+                
+                var validator = new FieldVal(null);
+                var i = 0;
                 var do_possible = function(){
                     logger.log("do_possible ",i);
                     i++;
                     logger.log(i, array.length);
                     if(i>array.length){
-                        end();
+                        callback(validator.end());
                         return;
                     }
                     var value = array[i-1];
 
-                    FieldVal.use_checks(value, option, {
-                        field_name: null,
-                        validator: null,
+                    FieldVal.use_checks(value, [function(value, emit){
+                        on_each(value,i,emit,callback);
+                    }], {
+                        field_name: ""+i,
+                        validator: validator,
                         emit: function(emitted_value){
                             array[i-1] = emitted_value;
                         }
                     }, function(response){
                         logger.log("response ",response);
-                        if(response===undefined){
-                            logger.log("success");
-                            end(undefined);//Success
-                        } else {
-                            do_possible();
+                        if (response !== undefined) {
+                            validator.invalid("" + i, response);
                         }
+                        do_possible();
                     });
                     logger.log("end of do_possible");
-                }
-
-
-
-
-
-                var validator = new FieldVal(null);
-                for (var i = 0; i < array.length; i++) {
-                    var value = array[i];
-
-                    var res = on_each(value,i,emit,callback);
-                    if (res !== undefined) {
-                        validator.invalid("" + i, res);
-                    }
-                }
-
-
-
-                var error = validator.end();
-                if(error!==undefined){
-                    return error;
                 }
             };
             if(flags){
@@ -532,6 +527,38 @@ var BasicVal = (function(){
             possibles = possibles || [];
             if(possibles.length===0){
                 console.error("BasicVal.multiple called without possibles.");
+            }
+            
+            var check = function(value, emit){
+                for(var i = 0; i < possibles.length; i++){
+                    var option = possibles[i];
+            
+                    var emitted_value;
+                    var option_error = FieldVal.use_checks(value, option, null, null, function(emitted){
+                        emitted_value = emitted;
+                    })
+                    if(!option_error){
+                        if(emitted_value!==undefined){
+                            emit(emitted_value);
+                        }
+                        return null;
+                    }
+                }
+                return FieldVal.create_error(BasicVal.errors.no_valid_option, flags);
+            }
+            if(flags){
+                flags.check = check;
+                return flags
+            }
+            return {
+                check: check
+            }
+        },
+        multiple_async: function(possibles, flags){
+
+            possibles = possibles || [];
+            if(possibles.length===0){
+                console.error("BasicVal.multiple_async called without possibles.");
                 return;
             }
 
@@ -542,21 +569,12 @@ var BasicVal = (function(){
                     emitted_value = emitted;
                 };
                 var i = 0;
-                var end = function(end_value){
-                    logger.log("end ",end_value);
-
-                    if(callback){
-                        callback(end_value);
-                    } else {
-                        to_return = end_value;
-                    }
-                }
                 var do_possible = function(){
                     logger.log("do_possible ",i);
                     i++;
                     logger.log(i, possibles.length);
                     if(i>possibles.length){
-                        end(FieldVal.create_error(BasicVal.errors.no_valid_option, flags));
+                        callback(FieldVal.create_error(BasicVal.errors.no_valid_option, flags));
                         return;
                     }
                     var option = possibles[i-1];
@@ -569,12 +587,11 @@ var BasicVal = (function(){
                         logger.log("response ",response);
                         if(response===undefined){
                             logger.log("success");
-                            end(undefined);//Success
+                            callback(undefined);//Success
                         } else {
                             do_possible();
                         }
                     });
-                    logger.log("end of do_possible");
                 }
                 do_possible();
                 logger.log("RETURNING ",to_return);
