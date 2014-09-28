@@ -265,7 +265,7 @@ var BasicVal = (function(){
         no_whitespace: function(flags) {
             var check = function(value) {
                 if (/\s/.test(value)){
-                    return FieldVal.create_error(BasicVal.errors.contains_whitespace, flags, max_len);
+                    return FieldVal.create_error(BasicVal.errors.contains_whitespace, flags);
                 }
             };
             if(flags){
