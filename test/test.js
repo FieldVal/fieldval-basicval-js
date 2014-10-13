@@ -1,4 +1,3 @@
-var logger = require("tracer").console();
 var FieldVal = require('fieldval');
 var bval = require("../src/BasicVal");
 var assert = require("assert")
@@ -282,7 +281,6 @@ describe('BasicVal', function() {
                     ]
                 ]
             ))
-            logger.log("output ",output);
 
             //Up to 3 characters, or 6+
             assert.equal("ABCDEFG", output);
@@ -302,7 +300,6 @@ describe('BasicVal', function() {
                 [
                     [
                         /*bval.max_length(3),*/ function(value, emit, callback){
-                            logger.log("async check")                            
                             setTimeout(function(){
                                 callback({
                                     "error": 1000,
