@@ -1,6 +1,6 @@
 Overview
 ==============
-The FieldVal-BasicVal library provides a variety of operators for use with [FieldVal-JS](https://github.com/FieldVal/fieldval-js/).
+The FieldVal-BasicVal library provides a variety of checks for use with [FieldVal-JS](https://github.com/FieldVal/fieldval-js/).
 
 Development
 =============
