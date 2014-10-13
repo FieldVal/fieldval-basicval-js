@@ -10,7 +10,7 @@ describe('BasicVal', function() {
                 "my_value": 13
             })
             assert.equal(13, my_validator.get("my_value", bval.integer(true)));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should not continue if required=false', function(){
@@ -29,7 +29,7 @@ describe('BasicVal', function() {
                 "my_value": 17
             })
             assert.equal(17, my_validator.get("my_value", bval.integer(false)));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should return an integer when an integer is requested and the value is an integer string and parse flag is true', function() {
@@ -37,7 +37,7 @@ describe('BasicVal', function() {
                 "my_integer": "26"
             })
             assert.equal(26, my_validator.get("my_integer", bval.integer(true, {parse: true})));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should create an error when an integer is requested and the value is an integer string, but parse flag is not set to true', function() {
@@ -89,7 +89,7 @@ describe('BasicVal', function() {
 
             var val_error = my_validator.end();
             assert.equal(15, my_value);
-            assert.strictEqual(undefined, val_error);
+            assert.strictEqual(null, val_error);
         })
 
         it('should return any errors thrown by the iterator', function() {
@@ -132,7 +132,7 @@ describe('BasicVal', function() {
                 "my_value": 11
             })
             assert.equal(11, my_validator.get("my_value", bval.integer(true), bval.minimum(10)));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should return a value when it is equal to the specified value', function() {
@@ -140,7 +140,7 @@ describe('BasicVal', function() {
                 "my_value": 10
             })
             assert.equal(10, my_validator.get("my_value", bval.integer(true), bval.minimum(10,{})));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should create an error when the value is below the specified value', function() {
@@ -168,7 +168,7 @@ describe('BasicVal', function() {
                 "my_value": 9
             })
             assert.equal(9, my_validator.get("my_value", bval.integer(true), bval.maximum(10)));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should return a value when it is equal to the specified value', function() {
@@ -176,7 +176,7 @@ describe('BasicVal', function() {
                 "my_value": 10
             })
             assert.equal(10, my_validator.get("my_value", bval.integer(true), bval.maximum(10,{})));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should create an error when the value is below the specified value', function() {
@@ -204,7 +204,7 @@ describe('BasicVal', function() {
                 "my_value": "ABCDEF"
             })
             assert.equal("ABCDEF", my_validator.get("my_value", bval.string(true), bval.min_length(5)));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should return a value when it\'s length is equal to the specified length', function() {
@@ -212,7 +212,7 @@ describe('BasicVal', function() {
                 "my_value": "ABCDE"
             })
             assert.equal("ABCDE", my_validator.get("my_value", bval.string(true), bval.min_length(5,{})));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should create an error when the value is below the specified value', function() {
@@ -286,9 +286,9 @@ describe('BasicVal', function() {
 
             //Up to 3 characters, or 6+
             assert.equal("ABCDEFG", output);
-            assert.equal(undefined, shorter);
+            assert.equal(null, shorter);
             assert.equal("ABCDEFG", longer);
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should return the valid value if one of the options is valid (and use emit functions) - async', function(done) {
@@ -332,7 +332,7 @@ describe('BasicVal', function() {
                 assert.equal(did_return, true);
                 assert.equal("ABCDEFG", output);
 
-                assert.equal(undefined, shorter);
+                assert.equal(null, shorter);
                 assert.equal("ABCDEFG", longer);
 
                 done();
@@ -347,7 +347,7 @@ describe('BasicVal', function() {
                 "my_email": "example-user@test.com"
             })
             assert.equal("example-user@test.com", my_validator.get("my_email", bval.string(true), bval.email({})));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should create an error when a string of invalid syntax is present', function() {
@@ -390,7 +390,7 @@ describe('BasicVal', function() {
             assert.equal("http://www.example.com/path/resource.type", my_validator.get("my_url_6", bval.string(true), bval.url()));
             assert.equal("http://127.0.0.1/images/example.jpg", my_validator.get("my_url_7", bval.string(true), bval.url()));
             assert.equal("https://127.0.0.1/images/example.jpg", my_validator.get("my_url_8", bval.string(true), bval.url()));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
     })
 
@@ -401,7 +401,7 @@ describe('BasicVal', function() {
                 "my_float": "43.5"
             })
             assert.equal(43.5, my_validator.get("my_float", bval.float(true, {parse: true})));
-            assert.strictEqual(undefined, my_validator.end());
+            assert.strictEqual(null, my_validator.end());
         })
 
         it('should create an error when an float is requested and the value is a float string, but parse flag is not set to true', function() {

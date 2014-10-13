@@ -1,10 +1,5 @@
 var BasicVal = (function(){
 
-    var logger;
-    if((typeof require) === 'function'){
-        logger = require('tracer').console();
-    }
-
     /* istanbul ignore if */
     if((typeof require) === 'function'){
         FieldVal = require("fieldval");
@@ -265,7 +260,7 @@ var BasicVal = (function(){
         no_whitespace: function(flags) {
             var check = function(value) {
                 if (/\s/.test(value)){
-                    return FieldVal.create_error(BasicVal.errors.contains_whitespace, flags);
+                    return FieldVal.create_error(BasicVal.errors.contains_whitespace, flags, max_len);
                 }
             };
             if(flags){
@@ -464,7 +459,9 @@ var BasicVal = (function(){
 
 
                     var res = on_each(value,i);
-                    if (res != null) {
+                    if (res === FieldVal.REQUIRED_ERROR){
+                        validator.missing("" + i);
+                    } else if (res != null) {
                         validator.invalid("" + i, res);
                     }
                 }
@@ -487,9 +484,7 @@ var BasicVal = (function(){
                 var validator = new FieldVal(null);
                 var i = 0;
                 var do_possible = function(){
-                    logger.log("do_possible ",i);
                     i++;
-                    logger.log(i, array.length);
                     if(i>array.length){
                         callback(validator.end());
                         return;
@@ -505,13 +500,11 @@ var BasicVal = (function(){
                             array[i-1] = emitted_value;
                         }
                     }, function(response){
-                        logger.log("response ",response);
                         if (response !== undefined) {
                             validator.invalid("" + i, response);
                         }
                         do_possible();
                     });
-                    logger.log("end of do_possible");
                 }
             };
             if(flags){
@@ -570,9 +563,7 @@ var BasicVal = (function(){
                 };
                 var i = 0;
                 var do_possible = function(){
-                    logger.log("do_possible ",i);
                     i++;
-                    logger.log(i, possibles.length);
                     if(i>possibles.length){
                         callback(FieldVal.create_error(BasicVal.errors.no_valid_option, flags));
                         return;
@@ -584,9 +575,7 @@ var BasicVal = (function(){
                         validator: null,
                         emit: emit_for_check
                     }, function(response){
-                        logger.log("response ",response);
                         if(response===undefined){
-                            logger.log("success");
                             callback(undefined);//Success
                         } else {
                             do_possible();
@@ -594,7 +583,6 @@ var BasicVal = (function(){
                     });
                 }
                 do_possible();
-                logger.log("RETURNING ",to_return);
                 return to_return;
             };
             if(flags){
