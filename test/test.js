@@ -196,6 +196,34 @@ describe('BasicVal', function() {
         })
     })
 
+    describe('does_not_contain()', function() {
+
+        it('should return a value when it is below the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": "ABCDEF"
+            })
+            assert.equal("ABCDEF", my_validator.get("my_value", bval.string(true), bval.does_not_contain(["G","H","I"])));
+            assert.strictEqual(null, my_validator.end());
+        })
+
+        it('should create an error when the value is below the specified value', function() {
+            var my_validator = new FieldVal({
+                "my_value": "ABCDEF"
+            })
+            assert.strictEqual(undefined, my_validator.get("my_value", bval.string(true), bval.does_not_contain(["A","C","F"])));
+            assert.deepEqual({
+                "invalid":{
+                    "my_value":{
+                        "error":105,
+                        "error_message":"Cannot contain A,C,F"
+                    }
+                },
+                "error_message":"One or more errors.",
+                "error":0
+            }, my_validator.end());
+        })
+    })
+
     describe('min_length()', function() {
 
         it('should return a value when it is longer than the specified length', function() {

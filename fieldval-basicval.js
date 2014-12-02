@@ -137,6 +137,13 @@ var BasicVal = (function(){
                     error: 104,
                     error_message: "Value not allowed"
                 };
+            },
+            should_not_contain: function(characters) {
+                var disallowed = characters.join(",");
+                return {
+                    error: 105,
+                    error_message: "Cannot contain "+disallowed
+                };
             }
         },
         equal_to: function(match, flags){
@@ -306,6 +313,25 @@ var BasicVal = (function(){
                     return FieldVal.create_error(BasicVal.errors.too_small, flags, min_val);
                 } else if (value > max_val) {
                     return FieldVal.create_error(BasicVal.errors.too_large, flags, max_val);
+                }
+            };
+            if(flags){
+                flags.check = check;
+                return flags;
+            }
+            return {
+                check: check
+            };
+        },
+        does_not_contain: function(characters, flags){
+            if(!Array.isArray(characters)){
+                characters = [characters];
+            }
+            var check = function(value) {
+                for(var i = 0; i < characters.length; i++){
+                    if(value.indexOf(characters[i])){
+                        return FieldVal.create_error(BasicVal.errors.should_not_contain, flags, characters);
+                    }
                 }
             };
             if(flags){
