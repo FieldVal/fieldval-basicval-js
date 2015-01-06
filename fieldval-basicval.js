@@ -329,7 +329,7 @@ var BasicVal = (function(){
             }
             var check = function(value) {
                 for(var i = 0; i < characters.length; i++){
-                    if(value.indexOf(characters[i])){
+                    if(value.indexOf(characters[i])!==-1){
                         return FieldVal.create_error(BasicVal.errors.should_not_contain, flags, characters);
                     }
                 }
@@ -483,8 +483,9 @@ var BasicVal = (function(){
                 for (var i = 0; i < array.length; i++) {
                     var value = array[i];
 
-
-                    var res = on_each(value,i);
+                    var res = on_each(value,i,function(emitted_value){
+                        array[i] = emitted_value;
+                    });
                     if (res === FieldVal.REQUIRED_ERROR){
                         validator.missing("" + i);
                     } else if (res != null) {
