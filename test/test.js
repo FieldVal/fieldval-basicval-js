@@ -63,15 +63,15 @@ describe('BasicVal', function() {
 
         it('array iteration and emit', function() {
             var my_validator = new FieldVal({
-                "my_value": [1,2,3,4,5]
+                "my_value": ["1",2,"3",4,5]
             })
 
             var my_value = my_validator.get(
                 "my_value", 
                 bval.array(true)
                 ,
-                bval.each(function(value, index){
-                    var error = bval.integer(true).check(value);
+                bval.each(function(value, index, emit){
+                    var error = bval.integer(true,{parse: true}).check(value,emit);
                     return error;
                 },{
                     //Flags
@@ -198,7 +198,7 @@ describe('BasicVal', function() {
 
     describe('does_not_contain()', function() {
 
-        it('should return a value when it is below the specified value', function() {
+        it('should return a value when it does not contain the specified characters', function() {
             var my_validator = new FieldVal({
                 "my_value": "ABCDEF"
             })
@@ -206,7 +206,7 @@ describe('BasicVal', function() {
             assert.strictEqual(null, my_validator.end());
         })
 
-        it('should create an error when the value is below the specified value', function() {
+        it('should create an error when the value contains any of the specified characters', function() {
             var my_validator = new FieldVal({
                 "my_value": "ABCDEF"
             })
