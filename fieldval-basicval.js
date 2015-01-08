@@ -8,7 +8,7 @@ var BasicVal = (function(){
     if (!Array.prototype.indexOf) {
         Array.prototype.indexOf = function(searchElement, fromIndex) {
             var k;
-            if (this == null) {
+            if (this === null) {
                 throw new TypeError('"this" is null or not defined');
             }
 
@@ -344,7 +344,7 @@ var BasicVal = (function(){
         },
         one_of: function(array, flags) {
             var valid_values = [];
-            if(Object.prototype.toString.call(array) === '[object Array]'){
+            if(Array.isArray(array)){
                 for(var i = 0; i < array.length; i++){
                     var option = array[i];
                     if((typeof option) === 'object'){
@@ -355,7 +355,9 @@ var BasicVal = (function(){
                 }
             } else {
                 for(var k in array){
-                    valid_values.push(k);
+                    if(array.hasOwnProperty(k)){
+                        valid_values.push(k);
+                    }
                 }
             }
             var check = function(value) {
@@ -384,7 +386,9 @@ var BasicVal = (function(){
                 }
             } else {
                 for(var k in array){
-                    valid_values.push(k);
+                    if(array.hasOwnProperty(k)){
+                        valid_values.push(k);
+                    }
                 }
             }
             var check = function(value) {
@@ -480,23 +484,37 @@ var BasicVal = (function(){
         each: function(on_each, flags) {
             var check = function(array, stop) {
                 var validator = new FieldVal(null);
-                for (var i = 0; i < array.length; i++) {
+                var iterator = function(i){
                     var value = array[i];
 
                     var res = on_each(value,i,function(emitted_value){
                         array[i] = emitted_value;
                     });
+                    if(res===FieldVal.ASYNC){
+                        throw new Error(".each used with async checks, use .each_async.");
+                    }
                     if (res === FieldVal.REQUIRED_ERROR){
                         validator.missing("" + i);
-                    } else if (res != null) {
+                    } else if (res) {
                         validator.invalid("" + i, res);
+                    }
+                };
+                if(Array.isArray(array)){
+                    for (var i = 0; i < array.length; i++) {
+                        iterator(i);
+                    }
+                } else {
+                    for (var k in array) {
+                        if(array.hasOwnProperty(k)){
+                            iterator(k);
+                        }
                     }
                 }
                 var error = validator.end();
-                if(error!=null){
+                if(error){
                     return error;
                 }
-            }
+            };
             if(flags){
                 flags.check = check;
                 return flags;
@@ -507,32 +525,54 @@ var BasicVal = (function(){
         },
         each_async: function(on_each, flags) {
             var check = function(array, emit, callback) {
+
+                var is_array = Array.isArray(array);
+                var keys;
+                if(!is_array){
+                    keys = Object.keys(array);
+                }
                 
                 var validator = new FieldVal(null);
-                var i = 0;
+                var idx = 0;
+                var i,value;
+                if(is_array){
+                    i = idx;
+                }
                 var do_possible = function(){
-                    i++;
-                    if(i>array.length){
-                        callback(validator.end());
-                        return;
+                    if(is_array){
+                        i++;
+                        if(i>array.length){
+                            callback(validator.end());
+                            return;
+                        }
+                        value = array[i-1];
+                    } else {
+                        idx++;
+                        if(idx>keys.length){
+                            callback(validator.end());
+                            return;
+                        }
+                        i = keys[idx-1];
+                        value = array[i];
                     }
-                    var value = array[i-1];
 
-                    FieldVal.use_checks(value, [function(value, emit){
-                        on_each(value,i,emit,callback);
+                    FieldVal.use_checks(value, [function(value, emit, next){
+                        on_each(value,i,emit,next);
                     }], {
-                        field_name: ""+i,
+                        field_name: is_array ? (""+(i-1)) : i,
                         validator: validator,
                         emit: function(emitted_value){
-                            array[i-1] = emitted_value;
+                            if(is_array){
+                                array[i-1] = emitted_value;
+                            } else {
+                                array[i] = emitted_value;
+                            }
                         }
                     }, function(response){
-                        if (response !== undefined) {
-                            validator.invalid("" + i, response);
-                        }
                         do_possible();
                     });
-                }
+                };
+                do_possible();
             };
             if(flags){
                 flags.check = check;
@@ -557,6 +597,9 @@ var BasicVal = (function(){
                     var option_error = FieldVal.use_checks(value, option, null, null, function(emitted){
                         emitted_value = emitted;
                     })
+                    if(option_error===FieldVal.ASYNC){
+                        throw new Error(".multiple used with async checks, use .multiple_async.");
+                    }
                     if(!option_error){
                         if(emitted_value!==undefined){
                             emit(emitted_value);
@@ -565,14 +608,14 @@ var BasicVal = (function(){
                     }
                 }
                 return FieldVal.create_error(BasicVal.errors.no_valid_option, flags);
-            }
+            };
             if(flags){
                 flags.check = check;
-                return flags
+                return flags;
             }
             return {
                 check: check
-            }
+            };
         },
         multiple_async: function(possibles, flags){
 
@@ -602,13 +645,13 @@ var BasicVal = (function(){
                         validator: null,
                         emit: emit_for_check
                     }, function(response){
-                        if(response===undefined){
+                        if(!response){
                             callback(undefined);//Success
                         } else {
                             do_possible();
                         }
                     });
-                }
+                };
                 do_possible();
                 return to_return;
             };
