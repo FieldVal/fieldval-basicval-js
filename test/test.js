@@ -122,6 +122,132 @@ describe('BasicVal', function() {
                 "error": 0
             }, val_error);
         })
+
+        it('array iteration async and emit', function(done) {
+            var my_validator = new FieldVal({
+                "my_value": ["1",2,"3",4,5]
+            })
+
+            var my_value;
+
+            my_validator.get_async(
+                "my_value", 
+                [
+                    bval.array(true),
+                    bval.each_async(function(value, index, emit, next){
+                        setTimeout(function(){
+                            var error = bval.integer(true,{parse: true}).check(value,emit);
+                            next(error);
+                        },1);
+                    },{
+                        //Flags
+                    }),
+                    function(value, emit){
+                        var count = 0;
+                        for(var i = 0; i < value.length; i++){
+                            count += value[i];
+                        }
+                        emit(count);
+                    }
+                ],
+                function(output){
+                    my_value = output;
+                }
+            );
+
+            my_validator.end(function(val_error){
+                assert.equal(15, my_value);
+                assert.strictEqual(null, val_error);
+                done();
+            });
+        })
+    })
+
+    describe('object()', function() {
+        it('object iteration and emit', function() {
+            var my_validator = new FieldVal({
+                "my_value": {
+                    "one": "1",
+                    "two": 2,
+                    "three": "3",
+                    "four": 4,
+                    "five": 5
+                }
+            })
+
+            var my_value = my_validator.get(
+                "my_value", 
+                bval.object(true)
+                ,
+                bval.each(function(value, index, emit){
+                    var error = bval.integer(true,{parse: true}).check(value,emit);
+                    return error;
+                },{
+                    //Flags
+                })
+                , 
+                function(value, emit){
+                    var count = 0;
+                    for(var i in value){
+                        if(value.hasOwnProperty(i)){
+                            count += value[i];
+                        }
+                    }
+                    emit(count);
+                }
+            )
+
+            var val_error = my_validator.end();
+            assert.equal(15, my_value);
+            assert.strictEqual(null, val_error);
+        })
+
+        it('object iteration async and emit', function(done) {
+            var my_validator = new FieldVal({
+                "my_value": {
+                    "one": "1",
+                    "two": 2,
+                    "three": "3",
+                    "four": 4,
+                    "five": 5
+                }
+            })
+
+            var my_value;
+
+            my_validator.get_async(
+                "my_value", 
+                [
+                    bval.object(true),
+                    bval.each_async(function(value, index, emit, next){
+                        setTimeout(function(){
+                            var error = bval.integer(true,{parse: true}).check(value,emit);
+                            next(error);
+                        },1);
+                    },{
+                        //Flags
+                    }),
+                    function(value, emit){
+                        var count = 0;
+                        for(var i in value){
+                            if(value.hasOwnProperty(i)){
+                                count += value[i];
+                            }
+                        }
+                        emit(count);
+                    }
+                ],
+                function(output){
+                    my_value = output;
+                }
+            );
+
+            my_validator.end(function(val_error){
+                assert.equal(15, my_value);
+                assert.strictEqual(null, val_error);
+                done();
+            });
+        })
     })
 
     describe('minimum()', function() {
@@ -270,8 +396,7 @@ describe('BasicVal', function() {
             //Up to 3 characters, or 6+
             assert.strictEqual(undefined, my_validator.get("my_string", /*bval.string(true), */bval.multiple(
                 [
-                   bval.max_length(3)
-                    ,
+                    bval.max_length(3),
                     bval.min_length(6)
                 ]
             )));
@@ -324,15 +449,12 @@ describe('BasicVal', function() {
 
             var shorter, longer, output, did_return = false;
 
-            my_validator.get_async("my_string",[bval.string(true), bval.multiple(
+            my_validator.get_async("my_string",[bval.string(true), bval.multiple_async(
                 [
                     [
-                        /*bval.max_length(3),*/ function(value, emit, callback){
+                        function(value, emit, callback){
                             setTimeout(function(){
-                                callback({
-                                    "error": 1000,
-                                    "error_message": "Custom error"
-                                })
+                                callback(bval.max_length(3).check(value))
                             },100)
                         }, function(value){
                             shorter = value;
@@ -348,11 +470,11 @@ describe('BasicVal', function() {
             )], function(response){
                 did_return = true;
                 output = response;
-                assert.deepEqual()
+                assert.deepEqual();
             })
 
             //Up to 3 characters, or 6+
-            my_validator.end(function(){
+            my_validator.end(function(error_output){
 
                 assert.equal(did_return, true);
                 assert.equal("ABCDEFG", output);
